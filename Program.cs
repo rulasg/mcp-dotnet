@@ -20,5 +20,23 @@ await builder.Build().RunAsync();
 public static class EchoTool
 {
     [McpServerTool, Description("Echoes the message back to the client.")]
-    public static string Echo(string message) => $"hello {message}";
+    public static string Echo(string message) => $"This text is echoed from MCP -  {message}";
+
+    [McpServerTool, Description("Gets the information of a given user")]
+    public static async Task<string> get_user_information(string handle)
+    {
+        using var httpClient = new HttpClient();
+        httpClient.DefaultRequestHeaders.UserAgent.TryParseAdd("request");
+
+        var response = await httpClient.GetAsync($"https://api.github.com/users/{handle}");
+        if (response.IsSuccessStatusCode)
+        {
+            var content = await response.Content.ReadAsStringAsync();
+            return content;
+        }
+        else
+        {
+            return $"Error: Unable to fetch user information. Status Code: {response.StatusCode}";
+        }
+    }
 }
