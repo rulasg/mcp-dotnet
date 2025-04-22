@@ -157,9 +157,9 @@ Refresh the docker image with the new code.
 docker build -t mcp-dotnet .
 ```
 
-## Installation
+## Installation building locally
 
-Follow these steps to set up and run the server:
+Follow these steps to build locally and run the server using Docker.
 
 1. **Clone the Repository**:
 
@@ -174,7 +174,7 @@ Follow these steps to set up and run the server:
    docker build -t mcp-dotnet .
    ```
 
-## Usage in your MCP Client
+3. **Configure MCP Client**
 
 To use this MCP server in your own MCP client, you can reference it as a tool in your MCP configuration. Below is an example of how to configure the MCP server in your client:
 
@@ -187,4 +187,37 @@ To use this MCP server in your own MCP client, you can reference it as a tool in
     }
   }
 }
+```
+
+## Installation using ghcr.io image
+
+Configure MCP Client to use the image from ghcr.io
+
+```json
+{
+  "Servers": {
+    "mcp-dotnet": {
+      "command": "docker",
+      "args": [ "run", "-i", "--rm", "ghcr.io/octodemo/mcp-dotnet" ]
+    }
+  }
+}
+```
+
+### push image to ghcr.io
+
+Skip any step if you have already done it.
+
+```ps
+# login to gh with package write scope
+gh auth refresh --scopes write:packages
+
+# set credentials for docker for ghcr.io
+gh auth token | docker login ghcr.io -u <MY_HANDLE> --password-stdin
+
+# tag image mcp-dotnet
+docker tag mcp-dotnet ghcr.io/octodemo/mcp-dotnet:latest
+
+# push the image to ghcr.io
+docker push ghcr.io/octodemo/mcp-dotnet
 ```
